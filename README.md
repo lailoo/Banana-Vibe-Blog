@@ -8,13 +8,17 @@
 
 <p>
 
+
+
+
+
 [![Version](https://img.shields.io/badge/version-v0.1.0-4CAF50.svg)](https://github.com/Anionex/banana-vibe-blog)
 ![Python](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white)
 ![Flask](https://img.shields.io/badge/Flask-3.0-000000?logo=flask&logoColor=white)
-
+<h1>Banana-Vibe-Blog</h1>
 </p>
 
-<b>一个基于多 Agent 架构的 AI 长文博客生成器，支持深度调研、智能配图、Mermaid 图表，<br></b>
+<b>一个基于多 Agent 架构的 AI 长文博客生成Agent，支持深度调研、智能配图、Mermaid 图表、代码集成，<br></b>
 <b>将技术知识转化为通俗易懂的科普文章，让每个人都能轻松理解复杂技术</b>
 
 <b>🎯 降低技术写作门槛，让知识传播更简单</b>
@@ -26,6 +30,50 @@
 <br>
 
 </div>
+
+
+
+## 前言
+
+**一天时间，一本大模型技术教程，50万字。**
+
+我用一天时间完成了 [《Hello LLM-FineTuning》](https://lailoo.github.io/Hello-LLM-FineTuning) —— 一本大模型微调技术教程，共 **15+章**、**40+万字**、**100+ 精美配图**。嗯？我在吹牛，可以[点进去](https://lailoo.github.io/Hello-LLM-FineTuning)阅读下。
+
+**秘密武器是 Banana-Vibe-Blog** —— 一款专为技术写作打造的「长文技术博客生成 Agent」。它帮我自动化的完成了从素材收集 → 深度调研 → 大纲规划 → 内容撰写 → 代码集成 → 智能配图 → 质量审核 → 专业排版的**写作全流程**工作。如果你也有很多想法和创意，却苦于没有时间和精力去落地，不妨试试 **Banana-Vibe-Blog** 😊
+
+> 让长文技术写作变得简单，让知识传播更高效。
+
+<table>
+<tr>
+<th>长度</th>
+<th>预览</th>
+<th>章节数</th>
+<th style="min-width:150px">博客长度</th>
+<th>示例文章</th>
+</tr>
+<tr>
+<td>📄 <b>短文</b></td>
+<td><img src="./logo/short.png" width="180"/></td>
+<td>3-5 章节</td>
+<td><code style="background:#ffebee;color:#c62828;padding:4px 12px;border-radius:12px;font-size:13px;font-weight:bold">📝 ~3.5万字</code><br><code style="background:#e8f5e9;color:#2e7d32;padding:2px 8px;border-radius:12px;font-size:12px">🎨 10 配图</code><br><code style="background:#e3f2fd;color:#7c4dff;padding:2px 8px;border-radius:12px;font-size:12px">💻 5 代码块</code></td>
+<td><a href="https://lailoo.github.io/Hello-LLM-FineTuning/#/chapter4/01_PEFT%E5%AE%9E%E6%88%98%E6%8C%87%E5%8D%97">PEFT实战指南</a><br><sub>概念介绍，快速入门</sub></td>
+</tr>
+<tr>
+<td>📑 <b>中等</b></td>
+<td><img src="./logo/middle.png" width="180"/></td>
+<td>5-8 章节</td>
+<td><code style="background:#ffebee;color:#c62828;padding:4px 12px;border-radius:12px;font-size:13px;font-weight:bold">📝 ~8.8万字</code><br><code style="background:#e8f5e9;color:#2e7d32;padding:2px 8px;border-radius:12px;font-size:12px">🎨 12 配图</code><br><code style="background:#e3f2fd;color:#7c4dff;padding:2px 8px;border-radius:12px;font-size:12px">💻 11 代码块</code></td>
+<td><a href="https://lailoo.github.io/Hello-LLM-FineTuning/#/chapter3/02_Hugging_Face_Transformers%E5%85%A5%E9%97%A8">HuggingFace Transformers入门</a><br><sub>具体示例+步骤说明</sub></td>
+</tr>
+<tr>
+<td>📚 <b>长文</b></td>
+<td><img src="./logo/long.png" width="180"/></td>
+<td>8-12 章节</td>
+<td><code style="background:#ffebee;color:#c62828;padding:4px 12px;border-radius:12px;font-size:14px;font-weight:bold">📝 ~14.8万字</code><br><code style="background:#e8f5e9;color:#2e7d32;padding:2px 8px;border-radius:12px;font-size:12px">🎨 22 配图</code><br><code style="background:#e3f2fd;color:#7c4dff;padding:2px 8px;border-radius:12px;font-size:12px">💻 17 代码块</code></td>
+<td><a href="https://lailoo.github.io/Hello-LLM-FineTuning/#/chapter4/02_PEFT%E4%B8%BB%E6%B5%81%E6%8A%80%E6%9C%AF%E5%85%A8%E8%A7%A3%E6%9E%90">PEFT主流技术全解析</a><br><sub>原理分析+数据支撑+边界情况</sub></td>
+</tr>
+</table>
+
 
 
 ## ✨ 项目缘起
@@ -72,7 +120,9 @@ Banana Vibe Blog 应运而生，基于多 Agent 协作架构，自动完成调�
 | 📑 **中等** | 5-8 章节 | ~60 分钟 | medium | 具体示例+步骤说明，深入学习 |
 | 📚 **长文** | 8-12 章节 | ~90+ 分钟 | deep | 原理分析+数据支撑+边界情况，全面掌握 |
 
-> 💡 **追问深度**：系统会根据文章长度自动调整内容审核标准。长文会触发更严格的深度检查，确保每个概念都有数据支撑和原理分析。
+> 💡 **追问深度**：系统会根据文章长度自动调整内容审核标准。长文会触发更严格的深度检查，确保每个概念都有**数据支撑**和**原理分析**。
+>
+> 💡 **长文模式特点**：深度追问（Questioner Agent 执行 deep 级别检查）、原理剖析（不仅讲 What 和 How，更深入 Why）、数据支撑（关键论点配有数据或权威引用）、完整代码（提供可运行的完整示例）。
 
 ### AI 工作状态 - 实时追踪生成进度
 
@@ -121,16 +171,16 @@ Banana Vibe Blog 应运而生，基于多 Agent 协作架构，自动完成调�
 
 ---
 
-## 🎨 技术博客产出案例
+### 🎨 技术博客产出案例
 
 | 博客标题 | 本地预览 | 网络博客 |
 |:---|:---:|:---:|
-| **Triton 部署实战指南：从设计思想到生产落地** | [Markdown](./backend/outputs/Triton%20部署实战指南_从设计思想到生产落地_20251231_034839.md) | [查看](https://blog.csdn.net/ll1042668699/article/details/156437086) |
-| **vLLM推理引擎深度拆解：核心加速机制与组件原理实战指南** | [Markdown](./backend/outputs/vLLM推理引擎深度拆解_核心加速机制与组件原理实战指南_20251231_031953.md) | [查看](https://blog.csdn.net/ll1042668699/article/details/156436798) |
 | **消息队列入门实战：从零搭建异步通信系统** | [Markdown](./backend/outputs/消息队列入门实战_从零搭建异步通信系统_20251230_045909.md) | [查看](https://blog.csdn.net/ll1042668699/article/details/156406666) |
 | **分布式锁实战指南：30分钟掌握高并发下的资源同步控制** | [Markdown](./backend/outputs/分布式锁实战指南_30分钟掌握高并发下的资源同步控制_20251230_052151.md) | [查看](https://blog.csdn.net/ll1042668699/article/details/156406394) |
-| **图解RAG进化：传统RAG vs Graph RAG架构实战对比** | [Markdown](./backend/outputs/图解RAG进化_传统RAG%20vs%20Graph%20RAG架构实战对比_20251231_042358.md) | [查看](https://blog.csdn.net/ll1042668699/article/details/156437897) |
 | **Redis 快速上手实战教程：从零搭建高性能缓存系统** | [Markdown](./backend/outputs/Redis%20快速上手实战教程_从零搭建高性能缓存系统_20251230_043948.md) | [查看](https://blog.csdn.net/ll1042668699/article/details/156438172) |
+
+---
+
 
 
 ## 🎯 功能介绍
@@ -159,7 +209,7 @@ Banana Vibe Blog 应运而生，基于多 Agent 协作架构，自动完成调�
 - **实时预览**：前端实时渲染 Markdown 和 Mermaid 图表
 
 
-## 🤖 多 Agent 协作架构
+## 🤖 Multi-Agent 协作架构
 
 <div align="center">
 
@@ -183,44 +233,81 @@ Banana Vibe Blog 采用多 Agent 协作架构，各个 Agent 分工明确，协�
 
 ## 🗺️ 开发计划
 
-| # | 状态 | 里程碑 |
+### ✅ 已完成功能
+
+| 状态 | 功能 | 说明 |
 | --- | --- | --- |
-| 1 | ✅ 已完成 | 多 Agent 架构实现（Researcher/Planner/Writer/Coder/Artist） |
-| 2 | ✅ 已完成 | 联网搜索服务集成 |
-| 3 | ✅ 已完成 | Mermaid 图表自动生成 |
-| 4 | ✅ 已完成 | AI 封面架构图生成 |
-| 5 | ✅ 已完成 | SSE 实时进度推送 |
-| 6 | ✅ 已完成 | Markdown 实时渲染预览 |
-| 7 | ✅ 已完成 | 文章导出为图片 |
-| 8 | ✅ 已完成 | 多轮搜索能力 - 支持迭代式深度调研 |
-| 9 | 🚧 开发中 | 自定义知识源整合 - 支持 PDF、Markdown 等多格式输入, 知识解析与深度调研 |
-| 9.1 | ✅ 已完成 | 自定义知识源整合(一期) - PDF/MD/TXT 文件解析 + 知识融合 MVP |
-| 9.2 | ✅ 已完成 | 自定义知识源整合(二期) - 知识分块 + 两级结构 + 图片摘要 |
-| 9.3 | 🧭 规划中 | 自定义知识源整合(三期) - 多文件上传 + 文档预览 + 性能优化 |
-| 10 | ✅ 已完成 | 专业技术书籍生成 - 围绕特定技术主题进行深度探索，自动生成系列博客并聚合成完整技术书籍。参见 [大模型微调开源项目](https://lailoo.github.io/Hello-LLM-FineTuning/#/) |
-| 11 | 🧭 规划中 | 优化搜索源 - 接入专业 AI 博客和论文网站，增强技术探索的前沿性与专业性 |
-| 12 | 🧭 规划中 | 自定义网页输入参考 - 支持用户指定参考资料来源，从指定 URL 下载网页内容作为知识来源 |
-| 13 | 🧭 规划中 | 多源输入集成 - B 站技术视频字幕整理、多平台内容聚合 |
-| 14 | 🧭 规划中 | GitHub 仓库代码解析 - 集成代码仓库，自动分析和原理解读 |
-| 15 | 🧭 规划中 | 论文解读与长文翻译 - 英文论文秒变中文技术方案 |
-| 16 | 🧭 规划中 | 自定义封面排版样式 - 以图生图，参考样式配置 |
-| 17 | 🧭 规划中 | 灵活配图选项 - 一章一图、多章一图等多种模式 |
-| 18 | 🧭 规划中 | 网站服务化 - 构建完整的在线服务平台 |
-| 19 | 🧭 规划中 | 外挂知识库能力 - 接入指定知识库源（待定-如何搭建知识库） |
-| 20 | 🧭 规划中 | 分享功能 - 支持文章、书籍的社交分享 |
-| 21 | 🧭 规划中 | 视频讲解能力 - 将书籍和论文转化为易理解的解释视频 |
-| 22 | 🧭 规划中 | 调研原文图表整合 - 增进调研原文中图与表的整合能力，将原始图表混合插入技术文章 |
-| 23 | 🧭 规划中 | 播客形式输出（TTS 语音合成） |
-| 24 | 🧭 规划中 | 多受众适配（高中生/儿童/职场版） |
-| 25 | 🧭 规划中 | 漫画形式输出 |
-| 26 | 🧭 规划中 | 自定义编辑与持续优化 - 类似代码 Agent 模式，选定内容后通过语言指令优化博客内容 |
-| 27 | 🧭 规划中 | 自媒体平台一键发布（小红书/微信公众号/知乎） |
-| 28 | 🧭 规划中 | AI 智能导读 - 思维导图 + 交互式阅读 |
-| 29 | 🧭 规划中 | 博客类型细分 - 概述总览综述型、技术专题深究型、实战教程型、源码解析型等多种写作风格 |
-| 30 | 🎯 终极目标 | 技术知识共创平台 - 从单一博客到共创技术书籍、问题聚合、Knowledge Graph |
+| ✅ | 多 Agent 架构 | Researcher/Planner/Writer/Coder/Artist 协作 |
+| ✅ | 联网搜索 | 智谱搜索 API 集成 |
+| ✅ | 多轮搜索 | 迭代式深度调研 |
+| ✅ | Mermaid 图表 | 流程图/架构图自动生成 |
+| ✅ | AI 封面图 | Nano Banana Pro 生成 |
+| ✅ | 实时预览 | SSE 进度推送 + Markdown 渲染 |
+| ✅ | 图片导出 | 文章导出为图片 |
+| ✅ | 知识源整合 | PDF/MD/TXT 解析 + 知识分块 + 图片摘要 |
+| ✅ | 技术书籍生成 | 系列博客聚合成完整书籍，参见 [大模型微调开源项目](https://lailoo.github.io/Hello-LLM-FineTuning/#/) |
+
+### 🚀 未来规划
+
+#### 📂 方向一：更多的输入源解析能力
+
+| 状态 | 功能 | 说明 |
+| --- | --- | --- |
+| 🚧 开发中 | 多文件上传 | 自定义知识源三期：文档预览 + 性能优化 |
+| 🧭 规划中 | 自定义网页输入 | 从指定 URL 下载网页内容作为知识来源 |
+| 🧭 规划中 | GitHub 仓库解析 | 集成代码仓库，自动分析和原理解读 |
+| 🧭 规划中 | 视频字幕整理 | B 站技术视频字幕提取与内容聚合 |
+| 🧭 规划中 | 外挂知识库 | 接入指定知识库源 |
+
+#### 🔬 方向二：更专业的深度分析能力
+
+| 状态 | 功能 | 说明 |
+| --- | --- | --- |
+| 🧭 规划中 | 优化搜索源 | 接入专业 AI 博客和论文网站 |
+| 🧭 规划中 | 论文解读 | 英文论文秒变中文技术方案 |
+| 🧭 规划中 | 原文图表整合 | 将调研原文中的图表混合插入文章 |
+| 🧭 规划中 | 博客类型细分 | 综述型、深究型、实战型、源码解析型 |
+
+#### ✍️ 方向三：更通俗的写作风格
+
+| 状态 | 功能 | 说明 |
+| --- | --- | --- |
+| 🧭 规划中 | 多受众适配 | 高中生版 / 儿童版 / 职场版 |
+| 🧭 规划中 | 自定义编辑 | 选定内容后通过语言指令优化 |
+| 🧭 规划中 | AI 智能导读 | 思维导图 + 交互式阅读 |
+
+#### 🎨 方向四：更多样的展示形式
+
+| 状态 | 功能 | 说明 |
+| --- | --- | --- |
+| 🧭 规划中 | 视频讲解 | 将书籍和论文转化为解释视频 |
+| 🧭 规划中 | 播客输出 | TTS 语音合成 |
+| 🧭 规划中 | 漫画形式 | 图文并茂的漫画风格输出 |
+| 🧭 规划中 | 自定义封面 | 以图生图，参考样式配置 |
+| 🧭 规划中 | 灵活配图 | 一章一图、多章一图等多种模式 |
+
+#### 🌐 方向五：从单一博客到技术知识共创平台
+
+| 状态 | 功能 | 说明 |
+| --- | --- | --- |
+| 🧭 规划中 | 网站服务化 | 构建完整的在线服务平台 |
+| 🧭 规划中 | 分享功能 | 支持文章、书籍的社交分享 |
+| 🧭 规划中 | 自媒体一键发布 | 小红书 / 微信公众号 / 知乎 |
+| 🎯 终极目标 | **技术知识共创平台** | 共创技术书籍、问题聚合、Knowledge Graph |
+
+#### 📝 方向六：笔记客户端建设
+
+| 状态 | 功能 | 说明 |
+| --- | --- | --- |
+| 🧭 规划中 | **技术写作AI IDE 建设** | 与 VS Code 深度整合，打造类 Cursor 的**技术写作 AI IDE** |
+| 🧭 规划中 | 专业知识库嵌入 | 内置技术领域知识库，提升生成质量 |
+| 🧭 规划中 | 提示词模板库 | 预设多种技术写作模板，一键调用 |
+| 🧭 规划中 | 技术角色系统 | 可切换不同技术专家角色（架构师/算法工程师/运维等） |
+| 🧭 规划中 | 本地笔记客户端 | 独立桌面应用，支持离线使用 |
+| 🧭 规划中 | 素材收集助手 | 快速收集网页/文档/代码片段作为写作素材 |
 
 
-## � 使用方法
+## 📖 使用方法
 
 ### 快速开始
 
