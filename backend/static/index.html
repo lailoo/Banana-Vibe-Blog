@@ -476,6 +476,70 @@
         .example-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; color: #333; }
         .example-desc { font-size: 12px; color: rgba(0,0,0,0.5); }
 
+        /* 历史记录区域 */
+        .history-section { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .history-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+        .history-card {
+            background: rgba(255,255,255,0.8);
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            position: relative;
+        }
+        .history-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(78,205,196,0.5);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        }
+        .history-card .delete-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 24px;
+            height: 24px;
+            background: rgba(255,107,107,0.9);
+            border: none;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 10;
+        }
+        .history-card:hover .delete-btn { opacity: 1; }
+        .history-card .delete-btn:hover { background: #ff6b6b; }
+        .history-cover {
+            height: 120px;
+            background: linear-gradient(135deg, #4ECDC4, #44A08D);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 36px;
+            overflow: hidden;
+        }
+        .history-cover img { width: 100%; height: 100%; object-fit: cover; }
+        .history-content { padding: 14px; }
+        .history-topic { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: #333; 
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .history-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+        .history-meta span {
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: rgba(0,0,0,0.05);
+            color: rgba(0,0,0,0.6);
+        }
+        .history-time { font-size: 11px; color: rgba(0,0,0,0.4); }
+        .history-empty {
+            text-align: center;
+            padding: 40px;
+            color: rgba(0,0,0,0.4);
+            font-size: 14px;
+        }
+
         @media (max-width: 768px) {
             .navbar { padding: 15px 20px; }
             .nav-links { display: none; }
@@ -576,6 +640,16 @@
                     <div class="example-desc">公共厕所的锁，秒懂分布式锁的精髓</div>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <!-- 历史记录区域 -->
+    <section class="history-section" id="historySection">
+        <div class="history-header">
+            <h2 class="section-title">📜 历史记录</h2>
+        </div>
+        <div class="history-grid" id="historyGrid">
+            <div class="history-empty">暂无历史记录，生成博客后将自动保存</div>
         </div>
     </section>
 
@@ -919,6 +993,9 @@
                     
                     // 显示博客结果
                     displayBlogResult(d);
+                    
+                    // 刷新历史记录列表
+                    loadHistory();
                     
                     eventSource.close();
                     eventSource = null;
@@ -1327,6 +1404,127 @@
             document.getElementById('resultSection').classList.add('show');
             document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
         }
+
+        // ========== 历史记录功能 ==========
+        
+        // 加载历史记录
+        async function loadHistory() {
+            try {
+                const response = await fetch('/api/history?limit=20');
+                const data = await response.json();
+                if (data.success && data.records) {
+                    renderHistoryList(data.records);
+                }
+            } catch (error) {
+                console.error('加载历史记录失败:', error);
+            }
+        }
+        
+        // 渲染历史记录列表
+        function renderHistoryList(records) {
+            const grid = document.getElementById('historyGrid');
+            if (!records || records.length === 0) {
+                grid.innerHTML = '<div class="history-empty">暂无历史记录，生成博客后将自动保存</div>';
+                return;
+            }
+            
+            grid.innerHTML = records.map(record => {
+                const coverHtml = record.cover_image 
+                    ? `<img src="/outputs/images/${record.cover_image.split('/').pop()}" alt="封面">`
+                    : '📝';
+                const timeStr = formatTime(record.created_at);
+                const typeMap = { 'tutorial': '教程', 'problem-solution': '问题解决', 'comparison': '对比分析' };
+                const lengthMap = { 'short': '短文', 'medium': '中等', 'long': '长文' };
+                
+                return `
+                    <div class="history-card" data-id="${record.id}">
+                        <button class="delete-btn" onclick="deleteHistory(event, '${record.id}')" title="删除">×</button>
+                        <div class="history-cover">${coverHtml}</div>
+                        <div class="history-content">
+                            <div class="history-topic">${escapeHtml(record.topic)}</div>
+                            <div class="history-meta">
+                                <span>📚 ${record.sections_count || 0} 章</span>
+                                <span>💻 ${record.code_blocks_count || 0} 代码</span>
+                                <span>⭐ ${record.review_score || 0}</span>
+                            </div>
+                            <div class="history-time">${timeStr} · ${typeMap[record.article_type] || '教程'} · ${lengthMap[record.target_length] || '中等'}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // 绑定点击事件
+            grid.querySelectorAll('.history-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('delete-btn')) return;
+                    loadHistoryDetail(card.dataset.id);
+                });
+            });
+        }
+        
+        // 格式化时间
+        function formatTime(timeStr) {
+            if (!timeStr) return '';
+            const date = new Date(timeStr);
+            const now = new Date();
+            const diff = now - date;
+            
+            if (diff < 60000) return '刚刚';
+            if (diff < 3600000) return `${Math.floor(diff / 60000)} 分钟前`;
+            if (diff < 86400000) return `${Math.floor(diff / 3600000)} 小时前`;
+            if (diff < 604800000) return `${Math.floor(diff / 86400000)} 天前`;
+            return date.toLocaleDateString('zh-CN');
+        }
+        
+        // 加载历史详情
+        async function loadHistoryDetail(historyId) {
+            try {
+                const response = await fetch(`/api/history/${historyId}`);
+                const data = await response.json();
+                if (data.success && data.record) {
+                    const record = data.record;
+                    let outline = {};
+                    try {
+                        outline = JSON.parse(record.outline || '{}');
+                    } catch (e) {}
+                    
+                    // 显示博客结果
+                    displayBlogResult({
+                        markdown: record.markdown_content,
+                        outline: outline,
+                        sections_count: record.sections_count,
+                        code_blocks_count: record.code_blocks_count,
+                        images_count: record.images_count,
+                        review_score: record.review_score
+                    });
+                }
+            } catch (error) {
+                console.error('加载历史详情失败:', error);
+                alert('加载历史记录失败');
+            }
+        }
+        
+        // 删除历史记录
+        async function deleteHistory(event, historyId) {
+            event.stopPropagation();
+            if (!confirm('确定要删除这条历史记录吗？')) return;
+            
+            try {
+                const response = await fetch(`/api/history/${historyId}`, { method: 'DELETE' });
+                const data = await response.json();
+                if (data.success) {
+                    loadHistory(); // 重新加载列表
+                } else {
+                    alert('删除失败: ' + data.error);
+                }
+            } catch (error) {
+                console.error('删除历史记录失败:', error);
+                alert('删除失败');
+            }
+        }
+        
+        // 页面加载时获取历史记录
+        document.addEventListener('DOMContentLoaded', loadHistory);
     </script>
 </body>
 </html>

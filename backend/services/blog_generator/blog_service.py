@@ -429,6 +429,26 @@ class BlogService:
             # 自动保存 Markdown 到文件（包含封面图）
             markdown_content = final_state.get('final_markdown', '')
             saved_path = None
+            
+            # 如果有封面图，在 Markdown 中插入封面图
+            markdown_with_cover = markdown_content
+            if cover_image_path and markdown_content:
+                cover_filename = os.path.basename(cover_image_path)
+                title = outline.get('title', topic)
+                cover_section = f"\n![{title} - 架构图](./images/{cover_filename})\n\n---\n\n"
+                # 在第一个 ## 之前插入封面图
+                lines = markdown_content.split('\n')
+                insert_idx = 0
+                for i, line in enumerate(lines):
+                    if line.startswith('## ') and i > 0:
+                        insert_idx = i
+                        break
+                if insert_idx > 0:
+                    lines.insert(insert_idx, cover_section)
+                    markdown_with_cover = '\n'.join(lines)
+                else:
+                    markdown_with_cover = cover_section + markdown_content
+            
             if markdown_content:
                 saved_path = self._save_markdown(
                     task_id=task_id,
@@ -437,11 +457,33 @@ class BlogService:
                     cover_image_path=cover_image_path
                 )
             
-            # 发送完成事件
+            # 保存历史记录（使用包含封面图的 markdown）
+            try:
+                from services.database_service import get_db_service
+                import json
+                db_service = get_db_service()
+                db_service.save_history(
+                    history_id=task_id,
+                    topic=topic,
+                    article_type=article_type,
+                    target_length=target_length,
+                    markdown_content=markdown_with_cover,
+                    outline=json.dumps(final_state.get('outline', {}), ensure_ascii=False),
+                    sections_count=len(final_state.get('sections', [])),
+                    code_blocks_count=len(final_state.get('code_blocks', [])),
+                    images_count=len(final_state.get('images', [])),
+                    review_score=final_state.get('review_score', 0),
+                    cover_image=cover_image_path
+                )
+                logger.info(f"历史记录已保存: {task_id}")
+            except Exception as e:
+                logger.warning(f"保存历史记录失败: {e}")
+            
+            # 发送完成事件（使用包含封面图的 markdown）
             if task_manager:
                 task_manager.send_event(task_id, 'complete', {
                     'success': True,
-                    'markdown': markdown_content,
+                    'markdown': markdown_with_cover,
                     'outline': final_state.get('outline', {}),
                     'sections_count': len(final_state.get('sections', [])),
                     'images_count': len(final_state.get('images', [])),

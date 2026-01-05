@@ -106,12 +106,29 @@ class DatabaseService:
                     FOREIGN KEY (document_id) REFERENCES documents(id) ON DELETE CASCADE
                 );
                 
+                -- 历史记录表：存储问答历史快照
+                CREATE TABLE IF NOT EXISTS history_records (
+                    id TEXT PRIMARY KEY,
+                    topic TEXT NOT NULL,
+                    article_type TEXT DEFAULT 'tutorial',
+                    target_length TEXT DEFAULT 'medium',
+                    markdown_content TEXT,
+                    outline TEXT,
+                    sections_count INTEGER DEFAULT 0,
+                    code_blocks_count INTEGER DEFAULT 0,
+                    images_count INTEGER DEFAULT 0,
+                    review_score INTEGER DEFAULT 0,
+                    cover_image TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+                
                 -- 创建索引
                 CREATE INDEX IF NOT EXISTS idx_documents_status ON documents(status);
                 CREATE INDEX IF NOT EXISTS idx_documents_created_at ON documents(created_at);
                 CREATE INDEX IF NOT EXISTS idx_chunks_document_id ON knowledge_chunks(document_id);
                 CREATE INDEX IF NOT EXISTS idx_chunks_type ON knowledge_chunks(chunk_type);
                 CREATE INDEX IF NOT EXISTS idx_images_document_id ON document_images(document_id);
+                CREATE INDEX IF NOT EXISTS idx_history_created_at ON history_records(created_at);
             ''')
         logger.info("数据库表初始化完成")
     
@@ -424,6 +441,73 @@ class DatabaseService:
                 (doc_id,)
             )
             return [dict(row) for row in cursor.fetchall()]
+    
+    # ========== 历史记录操作 ==========
+    
+    def save_history(
+        self,
+        history_id: str,
+        topic: str,
+        article_type: str,
+        target_length: str,
+        markdown_content: str,
+        outline: str,
+        sections_count: int = 0,
+        code_blocks_count: int = 0,
+        images_count: int = 0,
+        review_score: int = 0,
+        cover_image: str = None
+    ) -> Dict[str, Any]:
+        """保存历史记录"""
+        with self.get_connection() as conn:
+            conn.execute('''
+                INSERT INTO history_records 
+                (id, topic, article_type, target_length, markdown_content, outline, 
+                 sections_count, code_blocks_count, images_count, review_score, cover_image)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                history_id, topic, article_type, target_length, markdown_content, outline,
+                sections_count, code_blocks_count, images_count, review_score, cover_image
+            ))
+        
+        logger.info(f"保存历史记录: {history_id}, 主题: {topic}")
+        return self.get_history(history_id)
+    
+    def get_history(self, history_id: str) -> Optional[Dict[str, Any]]:
+        """获取单条历史记录"""
+        with self.get_connection() as conn:
+            cursor = conn.execute(
+                'SELECT * FROM history_records WHERE id = ?',
+                (history_id,)
+            )
+            row = cursor.fetchone()
+            if row:
+                return dict(row)
+        return None
+    
+    def list_history(self, limit: int = 20) -> List[Dict[str, Any]]:
+        """列出历史记录（按时间倒序）"""
+        with self.get_connection() as conn:
+            cursor = conn.execute(
+                '''SELECT id, topic, article_type, target_length, sections_count, 
+                   code_blocks_count, images_count, review_score, cover_image, created_at 
+                   FROM history_records ORDER BY created_at DESC LIMIT ?''',
+                (limit,)
+            )
+            return [dict(row) for row in cursor.fetchall()]
+    
+    def delete_history(self, history_id: str) -> bool:
+        """删除历史记录"""
+        with self.get_connection() as conn:
+            cursor = conn.execute(
+                'DELETE FROM history_records WHERE id = ?',
+                (history_id,)
+            )
+            deleted = cursor.rowcount > 0
+        
+        if deleted:
+            logger.info(f"删除历史记录: {history_id}")
+        return deleted
 
 
 # 全局单例

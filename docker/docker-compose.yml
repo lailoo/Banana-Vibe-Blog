@@ -11,6 +11,7 @@ services:
       - ../outputs:/app/outputs
       - ../backend/logs:/app/logs
       - ../backend/uploads:/app/uploads
+      - ../backend/data:/app/data
     env_file:
       - ../backend/.env
     environment:

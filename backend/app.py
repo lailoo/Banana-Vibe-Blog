@@ -883,6 +883,48 @@ def create_app(config_class=None):
             logger.error(f"博客生成失败: {e}", exc_info=True)
             return jsonify({'success': False, 'error': str(e)}), 500
     
+    # ========== 历史记录 API ==========
+    
+    @app.route('/api/history', methods=['GET'])
+    def list_history():
+        """获取历史记录列表"""
+        try:
+            limit = request.args.get('limit', 20, type=int)
+            db_service = get_db_service()
+            records = db_service.list_history(limit=limit)
+            return jsonify({'success': True, 'records': records})
+        except Exception as e:
+            logger.error(f"获取历史记录失败: {e}", exc_info=True)
+            return jsonify({'success': False, 'error': str(e)}), 500
+    
+    @app.route('/api/history/<history_id>', methods=['GET'])
+    def get_history(history_id):
+        """获取单条历史记录详情"""
+        try:
+            db_service = get_db_service()
+            record = db_service.get_history(history_id)
+            if record:
+                return jsonify({'success': True, 'record': record})
+            else:
+                return jsonify({'success': False, 'error': '记录不存在'}), 404
+        except Exception as e:
+            logger.error(f"获取历史记录失败: {e}", exc_info=True)
+            return jsonify({'success': False, 'error': str(e)}), 500
+    
+    @app.route('/api/history/<history_id>', methods=['DELETE'])
+    def delete_history(history_id):
+        """删除历史记录"""
+        try:
+            db_service = get_db_service()
+            deleted = db_service.delete_history(history_id)
+            if deleted:
+                return jsonify({'success': True, 'message': '删除成功'})
+            else:
+                return jsonify({'success': False, 'error': '记录不存在'}), 404
+        except Exception as e:
+            logger.error(f"删除历史记录失败: {e}", exc_info=True)
+            return jsonify({'success': False, 'error': str(e)}), 500
+    
     logger.info("Banana Blog 后端应用已启动")
     return app
 
