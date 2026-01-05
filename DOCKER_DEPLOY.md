@@ -40,13 +40,13 @@ DASHSCOPE_API_KEY=your_dashscope_key
 **开发环境**（仅启动后端）：
 
 ```bash
-docker-compose up -d backend
+docker compose up -d backend
 ```
 
 **生产环境**（启动后端 + Nginx）：
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 ### 3. 验证部署
@@ -54,7 +54,7 @@ docker-compose up -d
 检查容器状态：
 
 ```bash
-docker-compose ps
+docker compose ps
 ```
 
 测试健康检查：
@@ -69,29 +69,29 @@ curl http://localhost:5000/health
 
 ```bash
 # 查看所有服务日志
-docker-compose logs -f
+docker compose logs -f
 
 # 查看特定服务日志
-docker-compose logs -f backend
+docker compose logs -f backend
 
 # 查看最近 100 行日志
-docker-compose logs --tail=100 backend
+docker compose logs --tail=100 backend
 ```
 
 ### 停止和启动
 
 ```bash
 # 停止所有容器
-docker-compose down
+docker compose down
 
 # 停止并删除数据卷
-docker-compose down -v
+docker compose down -v
 
 # 重启服务
-docker-compose restart backend
+docker compose restart backend
 
 # 重新构建镜像
-docker-compose build --no-cache
+docker compose build --no-cache
 ```
 
 ### 进入容器
@@ -127,7 +127,7 @@ ssl/key.pem       # 私钥文件
 ### 启动完整堆栈
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 此时应用将在以下地址可访问：
@@ -140,7 +140,7 @@ docker-compose up -d
 2. 修改 `nginx.conf` 中的 `server_name` 为你的域名
 3. 重启 Nginx：
 ```bash
-docker-compose restart nginx
+docker compose restart nginx
 ```
 
 ## 故障排查
@@ -150,7 +150,7 @@ docker-compose restart nginx
 查看详细错误日志：
 
 ```bash
-docker-compose logs backend
+docker compose logs backend
 ```
 
 常见问题：
@@ -202,7 +202,7 @@ Docker Compose 配置了以下数据卷：
 
 ```bash
 # 停止并删除容器
-docker-compose down
+docker compose down
 
 # 删除镜像
 docker rmi vibe-blog-backend
