@@ -1409,14 +1409,21 @@
         
         // 加载历史记录
         async function loadHistory() {
+            console.log('[loadHistory] 开始加载历史记录...');
             try {
                 const response = await fetch('/api/history?limit=20');
+                console.log('[loadHistory] API 响应状态:', response.status);
                 const data = await response.json();
+                console.log('[loadHistory] API 返回数据:', data);
                 if (data.success && data.records) {
+                    console.log('[loadHistory] 记录数量:', data.records.length);
                     renderHistoryList(data.records);
+                } else {
+                    console.log('[loadHistory] 无记录或请求失败');
+                    renderHistoryList([]);
                 }
             } catch (error) {
-                console.error('加载历史记录失败:', error);
+                console.error('[loadHistory] 加载历史记录失败:', error);
             }
         }
         
