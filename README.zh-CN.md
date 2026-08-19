@@ -49,7 +49,7 @@ Vibe Blog 是一个基于 Flask、Vue 3 和 LangGraph 多 Agent 工作流构建�
 | 调研 | 多轮联网调研、来源筛选、可选深度抓取和本地素材检索 |
 | 规划 | 结构化大纲、受众与学习目标分析、大纲确认流程 |
 | 写作 | 分章节生成、深度追问、修订、事实检查和语言清理 |
-| 视觉 | Mermaid 图表，以及可选的 AI 封面、正文配图和封面动画 |
+| 视觉 | Mermaid 图表，以及可选的 AI 封面、搜索配图、正文配图和封面动画 |
 | 知识 | 文件解析、知识素材复用、文章历史和博客聚合成书 |
 | 运行 | SSE 进度、任务取消、任务恢复、Dashboard 和定时生成 |
 | 可观测性 | 结构化任务日志、Token 追踪和可选 Langfuse 链路追踪 |
@@ -93,7 +93,7 @@ Vibe Blog 是一个基于 Flask、Vue 3 和 LangGraph 多 Agent 工作流构建�
 | Planner | 将证据与目标转换为结构化大纲 |
 | Writer | 面向目标受众逐章节撰写内容 |
 | Questioner、Reviewer 与 Fact Checker | 检查深度、质量、一致性和事实依据 |
-| Coder 与 Artist | 生成代码示例、图表和可选媒体 |
+| Coder 与 Artist | 生成代码示例、图表、AI 生图或搜索配图的可选媒体 |
 | Humanizer、Voice Checker 与 Thread Checker | 优化语气、表达风格和章节连贯性 |
 | Assembler 与 Summary Generator | 组装最终文档并生成摘要 |
 
@@ -216,9 +216,9 @@ docker compose -f docker/docker-compose.yml ps
 | 分组 | 代表变量 | 是否必需 |
 | --- | --- | --- |
 | 文本模型 | `AI_PROVIDER_FORMAT`、`OPENAI_API_KEY`、`OPENAI_API_BASE`、`TEXT_MODEL` | 使用 OpenAI 兼容路径时必需 |
-| 联网调研 | `ZAI_SEARCH_API_KEY`、`SERPER_API_KEY`、`JINA_API_KEY` | 可选 |
+| 联网调研 | `ZAI_SEARCH_API_KEY`、`SERPER_API_KEY`、`JINA_API_KEY`、`TAVILY_API_KEY`、`ANYSEARCH_API_KEY`、`DOUBAO_WEB_SEARCH_API_KEY`、`DOUBAO_IMAGE_SEARCH_API_KEY` | 可选 |
 | 文档处理 | `MINERU_TOKEN`、本地素材设置 | 可选 |
-| 媒体生成 | `NANO_BANANA_API_KEY`、OSS 和视频设置 | 可选 |
+| 媒体生成 | `NANO_BANANA_API_KEY`、OSS 和视频设置、`DOUBAO_IMAGE_SEARCH_API_KEY`（搜索配图） | 可选 |
 | 链路追踪 | `TRACE_ENABLED`、`LANGFUSE_PUBLIC_KEY`、`LANGFUSE_SECRET_KEY` | 可选 |
 | 功能开关 | 书籍、小红书、衍生内容、深度抓取和 Agent 开关 | 可选 |
 

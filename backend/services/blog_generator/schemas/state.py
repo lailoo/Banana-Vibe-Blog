@@ -50,6 +50,7 @@ class SharedState(TypedDict):
     skip_researcher: bool  # background_investigation=false 时跳过素材收集节点
     image_style: str  # 图片风格 ID
     aspect_ratio: str  # 宽高比: 16:9 或 9:16（前端选择）
+    image_source: str  # 配图方式: ai / search / none
     
     # 文档知识 (用户上传的文档)
     document_ids: List[str]  # 用户上传的文档 ID 列表
@@ -203,6 +204,7 @@ def create_initial_state(
     document_ids: List[str] = None,
     document_knowledge: List[dict] = None,
     image_style: str = "",
+    image_source: str = "ai",
     aspect_ratio: str = "16:9",  # 新增：宽高比参数
     # 新增：文章长度配置参数
     custom_config: dict = None,
@@ -220,6 +222,7 @@ def create_initial_state(
         target_length=target_length,
         source_material=source_material,
         image_style=image_style,
+        image_source=image_source,
         aspect_ratio=aspect_ratio,  # 新增：宽高比
         # 文档知识
         document_ids=document_ids or [],

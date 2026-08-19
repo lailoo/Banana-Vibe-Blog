@@ -38,6 +38,7 @@
                       v-model:target-length="targetLength"
                       v-model:audience-adaptation="audienceAdaptation"
                       v-model:image-style="imageStyle"
+                      v-model:image-source="imageSource"
                       v-model:generate-cover-video="generateCoverVideo"
                       v-model:video-aspect-ratio="videoAspectRatio"
                       v-model:deep-thinking="deepThinking"
@@ -257,6 +258,7 @@ const {
   targetLength,
   audienceAdaptation,
   imageStyle,
+  imageSource,
   generateCoverVideo,
   videoAspectRatio,
   deepThinking,

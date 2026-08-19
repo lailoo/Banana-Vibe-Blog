@@ -6,7 +6,7 @@
           <Settings :size="18" />
           <span>设置</span>
         </DialogTitle>
-        <DialogDescription>调整模型、搜索、生成和 Agent 参数</DialogDescription>
+        <DialogDescription>调整模型、搜索、生成、Agent 和功能参数</DialogDescription>
       </DialogHeader>
 
       <!-- 加载态 -->

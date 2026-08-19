@@ -13,6 +13,7 @@ export interface BlogGenerateParams {
   document_ids?: string[]
   image_style?: string
   generate_images?: boolean
+  image_source?: string  // ai / search / none
   generate_cover_video?: boolean
   video_aspect_ratio?: string
   deep_thinking?: boolean

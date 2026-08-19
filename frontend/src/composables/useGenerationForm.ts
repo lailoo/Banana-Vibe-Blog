@@ -29,6 +29,7 @@ export function useGenerationForm(options: UseGenerationFormOptions = {}) {
   const targetLength = ref('mini')
   const audienceAdaptation = ref('default')
   const imageStyle = ref('cartoon')
+  const imageSource = ref('ai')  // ai / search / none
   const generateCoverVideo = ref(false)
   const videoAspectRatio = ref('16:9')
   const deepThinking = ref(false)
@@ -95,6 +96,7 @@ export function useGenerationForm(options: UseGenerationFormOptions = {}) {
         article_type: articleType.value,
         audience_adaptation: audienceAdaptation.value,
         image_style: imageStyle.value,
+        image_source: imageSource.value,
         document_ids: getReadyDocumentIds(),
       })
       return { kind: 'mini' as const, name: 'Mini 博客', response }
@@ -107,6 +109,7 @@ export function useGenerationForm(options: UseGenerationFormOptions = {}) {
       audience_adaptation: audienceAdaptation.value,
       document_ids: getReadyDocumentIds(),
       image_style: imageStyle.value,
+      image_source: imageSource.value,
       generate_cover_video: generateCoverVideo.value,
       video_aspect_ratio: videoAspectRatio.value,
       deep_thinking: deepThinking.value,
@@ -133,6 +136,7 @@ export function useGenerationForm(options: UseGenerationFormOptions = {}) {
     targetLength,
     audienceAdaptation,
     imageStyle,
+    imageSource,
     generateCoverVideo,
     videoAspectRatio,
     deepThinking,

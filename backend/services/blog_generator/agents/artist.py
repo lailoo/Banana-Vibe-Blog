@@ -558,7 +558,7 @@ class ArtistAgent:
                 image_size=ImageSize.SIZE_1K,
                 max_wait_time=600
             )
-            
+
             if result and (result.oss_url or result.local_path):
                 # 优先返回 OSS URL
                 final_path = result.oss_url or result.local_path
@@ -571,6 +571,93 @@ class ArtistAgent:
         except Exception as e:
             logger.error(f"AI 图片生成异常: {e}")
             return None
+
+    def _extract_search_keywords(self, text: str) -> str:
+        """
+        调用通用大模型从章节标题中提取简洁搜索关键词，提高搜图命中率。
+        
+        Args:
+            text: 原始文本（如章节标题）
+            
+        Returns:
+            提取后的搜索关键词，失败返回原始文本的前 30 字
+        """
+        if not text or len(text) <= 15:
+            return text
+        try:
+            prompt = f"""你是一个搜索关键词提取专家。请从以下文本中提取最核心的3-8个关键词作为图片搜索关键词。
+            要求：
+            - 提取最核心的技术名词、产品名、概念名
+            - 去掉序号、修饰词、评价性描述
+            - 只返回关键词本身，不要解释，不要标点，不要引号
+            - 搜索关键词之间用空格分割
+            - 单个关键词控制在 5 字以内
+
+            原始文本：{text}
+
+            关键词："""
+            response = self.llm.chat(messages=[{"role": "user", "content": prompt}])
+            keywords = response.strip().strip('"\'')
+            if keywords:
+                logger.info(f" 配图搜索关键词提取: '{keywords}'")
+                return keywords
+        except Exception as e:
+            logger.warning(f"配图搜索关键词提取失败，使用原始文本: {e}")
+        return text[:30]
+
+    def _search_image(
+        self,
+        query: str,
+        caption: str = "",
+    ) -> str:
+        """
+        通过豆包搜图获取配图图片 URL
+        
+        Args:
+            query: 搜索关键词
+            caption: 图片说明（兜底搜索词）
+            
+        Returns:
+            图片 URL，失败返回 None
+        """
+        try:
+            from ..services.doubao_search_service import get_doubao_image_search_service
+            service = get_doubao_image_search_service()
+            if not service or not service.is_available():
+                logger.warning("豆包搜图服务不可用，跳过搜索配图")
+                return None
+
+            search_query = query or caption
+            if not search_query:
+                return None
+
+            # 先用 LLM 提取简洁搜索关键词
+            refined_query = self._extract_search_keywords(search_query)
+
+            logger.info(f"🔍 搜索配图: {refined_query}")
+            result = service.search_images(refined_query)
+            if not result.get("success"):
+                logger.warning(f"豆包搜图失败: {result.get('error')}")
+                return None
+
+            images = result.get("images", [])
+            if not images:
+                logger.warning(f"豆包搜图无结果: {search_query}")
+                return None
+
+            # 返回第一张图片 URL
+            img_url = images[0].get("url", "")
+            if img_url:
+                logger.info(f"搜索配图成功: {img_url[:80]}...")
+                return img_url
+
+            return None
+        except Exception as e:
+            logger.error(f"搜索配图异常: {e}")
+            return None
+            
+                
+        
     
     def extract_image_placeholders(self, content: str) -> List[Dict[str, str]]:
         """
@@ -880,36 +967,49 @@ class ArtistAgent:
                 render_method = image.get('render_method', 'mermaid')
                 rendered_path = None
                 
-                # 如果是 ai_image 类型，调用 Nano Banana API 生成图片
+                # 获取配图方式
+                image_source = state.get('image_source', 'ai')
+                
+                # 如果是 ai_image 类型，根据 image_source 选择配图方式
                 if render_method == 'ai_image':
-                    # 从 state 获取图片风格参数
                     image_style = state.get('image_style', '')
                     
                     # 区分封面图和内容图的宽高比
-                    # 第一个章节的图片作为封面图，使用前端选择的宽高比
-                    # 其他章节的图片保持 16:9
                     if task['source'] == 'outline' and task['section_idx'] == 0:
-                        # 封面图（第一个章节）：使用前端选择的宽高比（与视频一致）
                         aspect_ratio = state.get('aspect_ratio', '16:9')
                         logger.info(f"检测到封面图，使用宽高比: {aspect_ratio}")
                     else:
-                        # 内容图：保持 16:9
                         aspect_ratio = '16:9'
                     
-                    # 直接使用文章标题作为图片标题，不使用 LLM 生成的 caption
                     article_title = task.get('article_title', '')
                     
-                    rendered_path = self._render_ai_image(
-                        prompt=image.get('content', ''),
-                        caption=article_title,  # 使用文章标题，而不是 LLM 生成的 caption
-                        image_style=image_style,
-                        aspect_ratio=aspect_ratio,
-                        illustration_type=task.get('illustration_type', '')
-                    )
-                    if rendered_path:
-                        # 如果是 OSS URL，直接使用；否则转为相对路径
-                        if not rendered_path.startswith('http'):
-                            rendered_path = f"./images/{rendered_path.split('/')[-1]}"
+                    if image_source == 'none':
+                        logger.info(f"配图方式为「不配图」，跳过: {task['image_id']}")
+                        rendered_path = None
+                    elif image_source == 'search':
+                        # 搜索配图：使用豆包搜图
+                        search_query = image.get('caption', '') or article_title or task.get('description', '')
+                        rendered_path = self._search_image(
+                            query=search_query,
+                            caption=article_title,
+                        )
+                        if rendered_path:
+                            logger.info(f"搜索配图成功: {task['image_id']}")
+                        else:
+                            logger.warning(f"搜索配图失败，跳过: {task['image_id']}")
+                    else:
+                        # AI 生图（默认方式）
+                        rendered_path = self._render_ai_image(
+                            prompt=image.get('content', ''),
+                            caption=article_title,
+                            image_style=image_style,
+                            aspect_ratio=aspect_ratio,
+                            illustration_type=task.get('illustration_type', '')
+                        )
+                        if rendered_path:
+                            # 如果是 OSS URL，直接使用；否则转为相对路径
+                            if not rendered_path.startswith('http'):
+                                rendered_path = f"./images/{rendered_path.split('/')[-1]}"
 
                 # code2prompt 增强：将 Mermaid 骨架图转为精美信息图
                 elif render_method == 'mermaid' and enable_enhancement:
@@ -992,12 +1092,24 @@ class ArtistAgent:
                             aspect_ratio = '16:9'
                         
                         article_title = task.get('article_title', '')
-                        rendered_path = self._render_ai_image(
-                            prompt=image.get('content', ''),
-                            caption=article_title,
-                            image_style=image_style,
-                            aspect_ratio=aspect_ratio
-                        )
+                        image_source = state.get('image_source', 'ai')
+                        
+                        if image_source == 'none':
+                            logger.info(f"配图方式为「不配图」，跳过: {task['image_id']}")
+                            rendered_path = None
+                        elif image_source == 'search':
+                            search_query = image.get('caption', '') or article_title or task.get('description', '')
+                            rendered_path = self._search_image(
+                                query=search_query,
+                                caption=article_title,
+                            )
+                        else:
+                            rendered_path = self._render_ai_image(
+                                prompt=image.get('content', ''),
+                                caption=article_title,
+                                image_style=image_style,
+                                aspect_ratio=aspect_ratio
+                            )
                         if rendered_path and not rendered_path.startswith('http'):
                             rendered_path = f"./images/{rendered_path.split('/')[-1]}"
 
@@ -1100,7 +1212,7 @@ class ArtistAgent:
         
         image_service = get_image_service()
         if not image_service or not image_service.is_available():
-            logger.warning("[Mini 模式] 图片生成服务不可用，跳过章节配图生成")
+            logger.warning(" 图片生成服务不可用，跳过章节配图生成")
             state['images'] = []
             state['section_images'] = []
             return state
@@ -1111,6 +1223,14 @@ class ArtistAgent:
         image_style = state.get('image_style', '')
         aspect_ratio = state.get('aspect_ratio', '16:9')
         article_title = state.get('topic', '')
+        image_source = state.get('image_source', 'ai')
+        
+        # 不配图方式：直接跳过章节配图生成
+        if image_source == 'none':
+            logger.info(" 配图方式为「不配图」，跳过章节配图生成")
+            state['images'] = []
+            state['section_images'] = []
+            return state
         
         # 根据宽高比选择图片比例
         if aspect_ratio == "9:16":
@@ -1136,6 +1256,40 @@ class ArtistAgent:
             section_summary = section_content[:2000] if section_content else section_title
             
             try:
+                if image_source == 'search':
+                    # 搜索配图：使用豆包搜图
+                    from ..services.doubao_search_service import get_doubao_image_search_service
+                    search_service = get_doubao_image_search_service()
+                    if not search_service or not search_service.is_available():
+                        logger.warning(" 豆包搜图服务不可用，跳过搜索配图")
+                        return {'success': False, 'idx': idx}
+                    # 先用 LLM 提取简洁搜索关键词
+                    refined_query = self._extract_search_keywords(section_summary)
+                    search_result = search_service.search_images(refined_query)
+                    if search_result.get("success"):
+                        images_found = search_result.get("images", [])
+                        if images_found:
+                            image_url = images_found[0].get("url", "")
+                            if image_url:
+                                elapsed = _time.time() - _start
+                                logger.info(f"[Artist] 第 {idx+1}/{total} 张搜索配图完成 ({elapsed:.1f}s): {refined_query}")
+                                return {
+                                    'success': True,
+                                    'idx': idx,
+                                    'section_title': section_title,
+                                    'image_url': image_url,
+                                    'image_resource': {
+                                        'id': f'mini_img_{idx + 1}',
+                                        'render_method': 'ai_image',
+                                        'content': section_title,
+                                        'caption': section_title,
+                                        'rendered_path': image_url
+                                    }
+                                }
+                    logger.warning(f" 搜索配图无结果: {section_title} → {refined_query}")
+                    return {'success': False, 'idx': idx}
+
+                # AI 生图（默认方式）
                 # 生成图片 Prompt
                 if image_style:
                     from services.media.image_styles import get_style_manager
@@ -1149,7 +1303,7 @@ class ArtistAgent:
                         article_summary=f"章节标题：{section_title}\n\n{section_summary}"
                     )
                 
-                logger.info(f"[Mini 模式] 生成章节 {idx + 1} 配图: {section_title}")
+                logger.info(f" 生成章节 {idx + 1} 配图: {section_title}")
                 
                 result = image_service.generate(
                     prompt=image_prompt,
@@ -1187,7 +1341,7 @@ class ArtistAgent:
                 return {'success': False, 'idx': idx, 'error': str(e)}
         
         # 并行生成所有章节配图
-        logger.info(f"[Mini 模式] 开始并行生成 {len(sections)} 张章节配图")
+        logger.info(f" 开始并行生成 {len(sections)} 张章节配图")
         
         results = [None] * len(sections)
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
@@ -1213,7 +1367,7 @@ class ArtistAgent:
                         sections[idx]['image_ids'] = []
                     sections[idx]['image_ids'].append(result['image_resource']['id'])
                 
-                logger.info(f"[Mini 模式] 章节 {idx + 1} 配图完成: {result['image_url'][:80]}...")
+                logger.info(f" 章节 {idx + 1} 配图完成: {result['image_url'][:80]}...")
             else:
                 # 配图失败，添加空占位
                 section_images.append(None)
@@ -1225,6 +1379,6 @@ class ArtistAgent:
         state['section_images'] = section_images  # 用于视频生成
         state['sections'] = sections
         
-        logger.info(f"[Mini 模式] 章节配图生成完成: 共 {len(images)} 张")
+        logger.info(f" 章节配图生成完成: 共 {len(images)} 张")
         
         return state

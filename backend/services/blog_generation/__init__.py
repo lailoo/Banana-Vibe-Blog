@@ -10,6 +10,26 @@ _EXPORTS = {
         "services.blog_generator.services.search_service",
         "SearchService",
     ),
+    "GeneralSearchBase": (
+        "services.blog_generator.services.general_search_base",
+        "GeneralSearchBase",
+    ),
+    "TavilySearchService": (
+        "services.blog_generator.services.tavily_search_service",
+        "TavilySearchService",
+    ),
+    "AnySearchService": (
+        "services.blog_generator.services.anysearch_service",
+        "AnySearchService",
+    ),
+    "DoubaoSearchService": (
+        "services.blog_generator.services.doubao_search_service",
+        "DoubaoSearchService",
+    ),
+    "DoubaoImageSearchService": (
+        "services.blog_generator.services.doubao_search_service",
+        "DoubaoImageSearchService",
+    ),
     "extract_article_summary": (
         "services.blog_generator.blog_service",
         "extract_article_summary",
@@ -33,6 +53,38 @@ _EXPORTS = {
     "init_search_service": (
         "services.blog_generator.services.search_service",
         "init_search_service",
+    ),
+    "init_tavily_service": (
+        "services.blog_generator.services.tavily_search_service",
+        "init_tavily_service",
+    ),
+    "get_tavily_service": (
+        "services.blog_generator.services.tavily_search_service",
+        "get_tavily_service",
+    ),
+    "init_anysearch_service": (
+        "services.blog_generator.services.anysearch_service",
+        "init_anysearch_service",
+    ),
+    "get_anysearch_service": (
+        "services.blog_generator.services.anysearch_service",
+        "get_anysearch_service",
+    ),
+    "init_doubao_search_service": (
+        "services.blog_generator.services.doubao_search_service",
+        "init_doubao_search_service",
+    ),
+    "get_doubao_search_service": (
+        "services.blog_generator.services.doubao_search_service",
+        "get_doubao_search_service",
+    ),
+    "init_doubao_image_search_service": (
+        "services.blog_generator.services.doubao_search_service",
+        "init_doubao_image_search_service",
+    ),
+    "get_doubao_image_search_service": (
+        "services.blog_generator.services.doubao_search_service",
+        "get_doubao_image_search_service",
     ),
     "init_serper_service": (
         "services.blog_generator.services.serper_search_service",

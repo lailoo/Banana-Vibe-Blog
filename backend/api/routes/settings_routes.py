@@ -50,19 +50,102 @@ SETTINGS_SCHEMA = {
         'tab': 'search', 'type': 'bool', 'label': '多轮搜索',
         'default': True,
     },
+    'GENERAL_SEARCH_PROVIDER': {
+        'tab': 'search', 'type': 'select', 'label': '通用搜索源',
+        'default': 'zhipu',
+        'options': ['zhipu', 'tavily', 'anysearch', 'doubao'],
+    },
+
+    # ── 智谱搜索 ──
     'ZAI_SEARCH_MAX_RESULTS': {
         'tab': 'search', 'type': 'int', 'label': '智谱搜索结果数',
         'default': 5, 'min': 1, 'max': 20,
     },
     'ZAI_SEARCH_RECENCY_FILTER': {
-        'tab': 'search', 'type': 'select', 'label': '时间过滤',
+        'tab': 'search', 'type': 'select', 'label': '智谱时间过滤',
         'default': 'noLimit',
         'options': ['noLimit', 'oneDay', 'oneWeek', 'oneMonth', 'threeMonths', 'oneYear'],
     },
+    'ZAI_SEARCH_ENGINE': {
+        'tab': 'search', 'type': 'select', 'label': '智谱搜索引擎',
+        'default': 'search_pro_quark',
+        'options': ['search_pro_quark', 'search_pro_web', 'search_pro_news'],
+    },
+    'ZAI_SEARCH_CONTENT_SIZE': {
+        'tab': 'search', 'type': 'select', 'label': '智谱摘要长度',
+        'default': 'medium',
+        'options': ['short', 'medium', 'long'],
+    },
+
+    # ── Tavily 搜索 ──
+    'TAVILY_MAX_RESULTS': {
+        'tab': 'search', 'type': 'int', 'label': 'Tavily 搜索结果数',
+        'default': 10, 'min': 1, 'max': 30,
+    },
+    'TAVILY_TIMEOUT': {
+        'tab': 'search', 'type': 'int', 'label': 'Tavily 超时(秒)',
+        'default': 30, 'min': 5, 'max': 120,
+    },
+
+    # ── AnySearch ──
+    'ANYSEARCH_MAX_RESULTS': {
+        'tab': 'search', 'type': 'int', 'label': 'AnySearch 结果数',
+        'default': 10, 'min': 1, 'max': 30,
+    },
+    'ANYSEARCH_TIMEOUT': {
+        'tab': 'search', 'type': 'int', 'label': 'AnySearch 超时(秒)',
+        'default': 30, 'min': 5, 'max': 120,
+    },
+    
+    
+    
+    
+
+    # ── 豆包搜索（通用文本）──
+    'DOUBAO_WEB_SEARCH_MAX_RESULTS': {
+        'tab': 'search', 'type': 'int', 'label': '豆包搜索结果数',
+        'default': 10, 'min': 1, 'max': 20,
+    },
+    'DOUBAO_WEB_SEARCH_TIMEOUT': {
+        'tab': 'search', 'type': 'int', 'label': '豆包搜索超时(秒)',
+        'default': 30, 'min': 5, 'max': 120,
+    },
+    'DOUBAO_WEB_SEARCH_MAX_SNIPPET_LENGTH': {
+        'tab': 'search', 'type': 'int', 'label': '豆包摘要长度(tokens)',
+        'default': 500, 'min': 100, 'max': 3000,
+    },
+
+    # ── 豆包搜图 ──
+    'DOUBAO_IMAGE_SEARCH_MAX_RESULTS': {
+        'tab': 'search', 'type': 'int', 'label': '豆包搜图返回数',
+        'default': 1, 'min': 1, 'max': 20,
+    },
+    'DOUBAO_IMAGE_SEARCH_TIMEOUT': {
+        'tab': 'search', 'type': 'int', 'label': '豆包搜图超时(秒)',
+        'default': 30, 'min': 5, 'max': 120,
+    },
+
+    # ── Serper Google 搜索 ──
     'SERPER_MAX_RESULTS': {
         'tab': 'search', 'type': 'int', 'label': 'Google 搜索结果数',
         'default': 10, 'min': 1, 'max': 30,
     },
+    'SERPER_TIMEOUT': {
+        'tab': 'search', 'type': 'int', 'label': 'Serper 超时(秒)',
+        'default': 10, 'min': 5, 'max': 60,
+    },
+
+    # ── 搜狗搜索（腾讯云 SearchPro）──
+    'SOGOU_MAX_RESULTS': {
+        'tab': 'search', 'type': 'int', 'label': '搜狗搜索结果数',
+        'default': 10, 'min': 1, 'max': 30,
+    },
+    'SOGOU_SEARCH_TIMEOUT': {
+        'tab': 'search', 'type': 'int', 'label': '搜狗搜索超时(秒)',
+        'default': 10, 'min': 5, 'max': 120,
+    },
+
+    # ── 深度抓取 ──
     'DEEP_SCRAPE_ENABLED': {
         'tab': 'search', 'type': 'bool', 'label': 'Jina 深度抓取',
         'default': False,

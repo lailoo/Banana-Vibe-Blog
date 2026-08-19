@@ -4,6 +4,16 @@ All notable changes to the Vibe Blog project will be documented in this file.
 
 ---
 
+## 2026-08-16
+
+### Added
+- ✨ **配图方式选择器** — 前端新增配图方式下拉框（AI 生图 / 搜索配图 / 不配图），支持传入豆包搜图API搜索图片插入文中。
+- ✨ **更多的搜索源** - 扩充通用搜索源，支持tavily、anysearch、doubao等多种通用搜索源
+
+### Changed
+- ♻️ **设置弹窗搜索 Tab 补全** — 为所有搜索提供商添加完整配置项：通用搜索源选择器 (`GENERAL_SEARCH_PROVIDER`)、智谱搜索（引擎、摘要长度）、豆包通用搜索（结果数、超时、摘要长度）、豆包搜图（结果数、超时）、Tavily（结果数、超时）、AnySearch（结果数、超时）、Serper/Google（结果数、超时）、搜狗搜索（结果数、超时）及深度抓取开关与 Top N 配置。
+- ♻️ **Artist 搜索配图集成** — 使用 `get_doubao_image_search_service()` 获取豆包搜图服务，应用关键词提取并记录 refined query 以提升调试可见性。
+
 ## 2026-08-03
 
 ### Changed

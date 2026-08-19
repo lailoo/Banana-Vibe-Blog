@@ -41,8 +41,20 @@
         </select>
       </div>
 
-      <!-- 配图风格 -->
+      <!-- 配图方式 -->
       <div class="option-item">
+        <span class="option-label">
+          <Image :size="14" /> 配图方式:
+        </span>
+        <select v-model="localImageSource" :disabled="isLoading">
+          <option value="ai">🎨 模型生图</option>
+          <option value="search">🔍 搜索配图</option>
+          <option value="none">🚫 不配图</option>
+        </select>
+      </div>
+
+      <!-- 配图风格（仅模型生图时显示） -->
+      <div v-if="localImageSource === 'ai'" class="option-item">
         <span class="option-label">
           <Palette :size="14" /> 配图风格:
         </span>
@@ -155,7 +167,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { FileText, File, Users, Palette, Video, Monitor, Settings, Search, Brain, MessageSquare } from 'lucide-vue-next'
+import { FileText, File, Users, Palette, Image, Video, Monitor, Settings, Search, Brain, MessageSquare } from 'lucide-vue-next'
 
 interface CustomConfig {
   sectionsCount: number
@@ -175,6 +187,7 @@ interface Props {
   targetLength: string
   audienceAdaptation: string
   imageStyle: string
+  imageSource: string
   generateCoverVideo: boolean
   videoAspectRatio: string
   deepThinking: boolean
@@ -193,6 +206,7 @@ interface Emits {
   (e: 'update:targetLength', value: string): void
   (e: 'update:audienceAdaptation', value: string): void
   (e: 'update:imageStyle', value: string): void
+  (e: 'update:imageSource', value: string): void
   (e: 'update:generateCoverVideo', value: boolean): void
   (e: 'update:videoAspectRatio', value: string): void
   (e: 'update:deepThinking', value: boolean): void
@@ -223,6 +237,11 @@ const localAudienceAdaptation = computed({
 const localImageStyle = computed({
   get: () => props.imageStyle,
   set: (value) => emit('update:imageStyle', value)
+})
+
+const localImageSource = computed({
+  get: () => props.imageSource,
+  set: (value) => emit('update:imageSource', value)
 })
 
 const localGenerateCoverVideo = computed({

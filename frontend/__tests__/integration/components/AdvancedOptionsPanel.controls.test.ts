@@ -10,6 +10,7 @@ const baseProps = {
   targetLength: 'mini',
   audienceAdaptation: 'default',
   imageStyle: 'cartoon',
+  imageSource: 'ai',
   generateCoverVideo: false,
   videoAspectRatio: '16:9',
   deepThinking: false,
@@ -115,6 +116,47 @@ describe('AdvancedOptionsPanel — interactive mode', () => {
     await interactiveCheckbox!.setValue(true)
     expect(wrapper.emitted('update:interactive')).toBeTruthy()
     expect(wrapper.emitted('update:interactive')![0]).toEqual([true])
+  })
+})
+
+describe('AdvancedOptionsPanel — image source & style', () => {
+  it('should show 配图风格 select only when imageSource is "ai" (模型生图)', () => {
+    const wrapper = mount(AdvancedOptionsPanel, { props: baseProps }) // imageSource: 'ai'
+    const styleSelect = wrapper.findAll('select').find((s) => {
+      return s.element.closest('.option-item')?.textContent?.includes('配图风格')
+    })
+    expect(styleSelect).toBeTruthy()
+  })
+
+  it('should hide 配图风格 select when imageSource is "search"', () => {
+    const wrapper = mount(AdvancedOptionsPanel, {
+      props: { ...baseProps, imageSource: 'search' },
+    })
+    const styleSelect = wrapper.findAll('select').find((s) => {
+      return s.element.closest('.option-item')?.textContent?.includes('配图风格')
+    })
+    expect(styleSelect).toBeFalsy()
+  })
+
+  it('should hide 配图风格 select when imageSource is "none" (不配图)', () => {
+    const wrapper = mount(AdvancedOptionsPanel, {
+      props: { ...baseProps, imageSource: 'none' },
+    })
+    const styleSelect = wrapper.findAll('select').find((s) => {
+      return s.element.closest('.option-item')?.textContent?.includes('配图风格')
+    })
+    expect(styleSelect).toBeFalsy()
+  })
+
+  it('should emit update:imageSource when 配图方式 toggled', async () => {
+    const wrapper = mount(AdvancedOptionsPanel, { props: baseProps })
+    const sourceSelect = wrapper.findAll('select').find((s) => {
+      return s.element.closest('.option-item')?.textContent?.includes('配图方式')
+    })
+    expect(sourceSelect).toBeTruthy()
+    await sourceSelect!.setValue('search')
+    expect(wrapper.emitted('update:imageSource')).toBeTruthy()
+    expect(wrapper.emitted('update:imageSource')![0]).toEqual(['search'])
   })
 })
 

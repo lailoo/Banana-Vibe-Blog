@@ -32,6 +32,7 @@ class TestE2EFlaskAppInit:
         has_zhipu = (
             "智谱搜索服务已初始化" in log_text
             or "智谱搜索服务不可用" in log_text
+            or "提供商 zhipu 不可用" in log_text
         )
         assert has_zhipu, f"智谱搜索初始化日志缺失。完整日志:\n{log_text}"
 

@@ -49,6 +49,7 @@ describe('useGenerationForm', () => {
       audience_adaptation: 'default',
       image_style: 'cartoon',
       document_ids: ['doc-1'],
+      image_source: 'ai',
     })
   })
 
@@ -100,6 +101,7 @@ describe('useGenerationForm', () => {
       audience_adaptation: 'default',
       document_ids: ['doc-2'],
       image_style: 'cartoon',
+      image_source: 'ai',
       generate_cover_video: true,
       video_aspect_ratio: '16:9',
       deep_thinking: true,

@@ -53,7 +53,7 @@
                       <Pencil v-else :size="16" />
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent>{{ isEditing ? '取消编辑' : '编辑' }}</TooltipContent>
+                  <TooltipContent>{{ isEditing ? '返回' : '编辑' }}</TooltipContent>
                 </Tooltip>
                 <Tooltip>
                   <TooltipTrigger as-child>

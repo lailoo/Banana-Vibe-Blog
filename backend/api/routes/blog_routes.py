@@ -58,10 +58,11 @@ def init_blog_services(app_config):
     try:
         init_search_service(app_config)
         search_service = get_search_service()
+        provider = os.environ.get('GENERAL_SEARCH_PROVIDER', 'zhipu')
         if search_service and search_service.is_available():
-            logger.info("智谱搜索服务已初始化")
+            logger.info(f"通用搜索服务已初始化 (提供商: {provider})")
         else:
-            logger.warning("智谱搜索服务不可用，Researcher Agent 将跳过联网搜索")
+            logger.warning(f"通用搜索服务不可用 (提供商: {provider})，Researcher Agent 将跳过联网搜索")
 
         # 75.02 Serper Google 搜索
         try:
@@ -80,6 +81,15 @@ def init_blog_services(app_config):
                 logger.info("搜狗搜索服务已初始化")
         except Exception as e:
             logger.warning(f"搜狗服务初始化跳过: {e}")
+
+        # 豆包搜图（独立实例，用 DOUBAO_IMAGE_SEARCH_API_KEY）
+        try:
+            from services.blog_generation import init_doubao_image_search_service
+            img_svc = init_doubao_image_search_service(app_config)
+            if img_svc and img_svc.is_available():
+                logger.info("豆包搜图服务已初始化（独立实例）")
+        except Exception as e:
+            logger.warning(f"豆包搜图服务初始化跳过: {e}")
 
         llm_service = get_llm_service()
         knowledge_service = get_knowledge_service()
@@ -278,6 +288,7 @@ def generate_blog():
         document_ids = data.get('document_ids', [])
         image_style = data.get('image_style', '')
         generate_images = data.get('generate_images', True)
+        image_source = data.get('image_source', 'ai')  # ai / search / none
         generate_cover_video = data.get('generate_cover_video', False)
         video_aspect_ratio = data.get('video_aspect_ratio', '16:9')
         custom_config = data.get('custom_config', None)
@@ -335,6 +346,7 @@ def generate_blog():
             document_knowledge=document_knowledge,
             image_style=image_style,
             generate_images=generate_images,
+            image_source=image_source,
             generate_cover_video=generate_cover_video,
             video_aspect_ratio=video_aspect_ratio,
             custom_config=custom_config,
@@ -374,11 +386,12 @@ def generate_blog_mini():
         audience_adaptation = data.get('audience_adaptation', 'default')
         image_style = data.get('image_style', '')
         generate_images = data.get('generate_images', True)
+        image_source = data.get('image_source', 'ai')  # ai / search / none
         background_investigation = data.get('background_investigation', True)
         generate_cover_video = data.get('generate_cover_video', False)
         video_aspect_ratio = data.get('video_aspect_ratio', '16:9')
 
-        logger.info(f"📝 Mini 博客生成请求: topic={topic}, article_type={article_type}, audience_adaptation={audience_adaptation}, image_style={image_style}, generate_cover_video={generate_cover_video}, video_aspect_ratio={video_aspect_ratio}")
+        logger.info(f"📝 Mini 博客生成请求: topic={topic}, article_type={article_type}, audience_adaptation={audience_adaptation}, image_style={image_style}, image_source={image_source}, generate_cover_video={generate_cover_video}, video_aspect_ratio={video_aspect_ratio}")
 
         blog_service = get_blog_service()
         if not blog_service:
@@ -402,6 +415,7 @@ def generate_blog_mini():
             document_knowledge=[],
             image_style=image_style,
             generate_images=generate_images,
+            image_source=image_source,
             generate_cover_video=generate_cover_video,
             video_aspect_ratio=video_aspect_ratio,
             custom_config=None,

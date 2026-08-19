@@ -455,6 +455,7 @@ class BlogService:
         document_knowledge: list = None,
         image_style: str = "",
         generate_images: bool = True,
+        image_source: str = "ai",
         generate_cover_video: bool = False,
         video_aspect_ratio: str = "16:9",
         custom_config: dict = None,
@@ -479,6 +480,7 @@ class BlogService:
             document_knowledge: 文档知识列表
             image_style: 图片风格 ID
             generate_images: 是否生成章节图和封面图
+            image_source: 配图方式 (ai/search/none)
             generate_cover_video: 是否生成封面动画
             custom_config: 自定义配置（仅当 target_length='custom' 时使用）
             deep_thinking: 是否启用深度思考模式
@@ -506,6 +508,7 @@ class BlogService:
                             document_knowledge=document_knowledge,
                             image_style=image_style,
                             generate_images=generate_images,
+                            image_source=image_source,
                             generate_cover_video=generate_cover_video,
                             video_aspect_ratio=video_aspect_ratio,
                             custom_config=custom_config,
@@ -527,6 +530,7 @@ class BlogService:
                         document_knowledge=document_knowledge,
                         image_style=image_style,
                         generate_images=generate_images,
+                        image_source=image_source,
                         generate_cover_video=generate_cover_video,
                         video_aspect_ratio=video_aspect_ratio,
                         custom_config=custom_config,
@@ -557,6 +561,7 @@ class BlogService:
         document_knowledge: list = None,
         image_style: str = "",
         generate_images: bool = True,
+        image_source: str = "ai",
         generate_cover_video: bool = False,
         video_aspect_ratio: str = "16:9",
         custom_config: dict = None,
@@ -625,7 +630,7 @@ class BlogService:
             # 获取文章长度配置
             from config import get_article_config
             article_config = get_article_config(target_length, custom_config).copy()
-            if not generate_images:
+            if not generate_images or image_source == "none":
                 article_config['images_count'] = 0
             logger.info(f"文章配置: sections={article_config['sections_count']}, "
                         f"images={article_config['images_count']}, "
@@ -643,6 +648,7 @@ class BlogService:
                 document_ids=document_ids or [],
                 document_knowledge=document_knowledge or [],
                 image_style=image_style,
+                image_source=image_source,
                 aspect_ratio=video_aspect_ratio,  # 新增：传递宽高比
                 custom_config=custom_config,
                 target_sections_count=article_config['sections_count'],
@@ -789,6 +795,7 @@ class BlogService:
                     final_state=final_state,
                     article_config=article_config,
                     generate_images=generate_images,
+                    image_source=image_source,
                     generate_cover_video=generate_cover_video,
                     video_aspect_ratio=video_aspect_ratio,
                     task_manager=task_manager,
@@ -845,6 +852,7 @@ class BlogService:
         target_length = task_info.get('target_length', 'medium')
         interactive = task_info.get('interactive', False)
         generate_images = task_info.get('generate_images', True)
+        image_source = task_info.get('image_source', 'ai')
         generate_cover_video = task_info.get('generate_cover_video', False)
         video_aspect_ratio = task_info.get('video_aspect_ratio', '16:9')
 
@@ -923,6 +931,7 @@ class BlogService:
                     final_state=final_state,
                     article_config=article_config,
                     generate_images=generate_images,
+                    image_source=image_source,
                     generate_cover_video=generate_cover_video,
                     video_aspect_ratio=video_aspect_ratio,
                     task_manager=task_manager,

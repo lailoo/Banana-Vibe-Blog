@@ -49,7 +49,7 @@ Assembly, history, and export
 | Research | Multi-round web research, source curation, optional deep scraping, and local material retrieval |
 | Planning | Structured outlines, audience and learning-objective analysis, and an outline confirmation flow |
 | Writing | Section-by-section generation with depth checks, revision, fact checking, and style cleanup |
-| Visuals | Mermaid diagrams plus optional AI-generated covers, illustrations, and cover animation |
+| Visuals | Mermaid diagrams plus optional AI-generated covers, search-based illustrations, and cover animation |
 | Knowledge | File parsing, reusable knowledge material, article history, and blog-to-book aggregation |
 | Operations | SSE progress, cancellation, task recovery, dashboard views, and scheduled generation |
 | Observability | Structured task logs, token tracking, and optional Langfuse tracing |
@@ -93,7 +93,7 @@ The workflow uses specialized agents with a shared typed state:
 | Planner | Convert evidence and objectives into a structured outline |
 | Writer | Draft coherent sections for the target audience |
 | Questioner, Reviewer, and Fact Checker | Challenge depth, quality, consistency, and factual support |
-| Coder and Artist | Produce code examples, diagrams, and optional generated media |
+| Coder and Artist | Produce code examples, diagrams, AI-generated or search-based illustrations, and optional cover animation |
 | Humanizer, Voice Checker, and Thread Checker | Improve tone, voice, and cross-section continuity |
 | Assembler and Summary Generator | Build the final document and derived summary |
 
@@ -216,9 +216,9 @@ The checked-in [`backend/.env.example`](backend/.env.example) is the source of t
 | Group | Representative variables | Required? |
 | --- | --- | --- |
 | Text model | `AI_PROVIDER_FORMAT`, `OPENAI_API_KEY`, `OPENAI_API_BASE`, `TEXT_MODEL` | Yes, for the OpenAI-compatible path |
-| Research | `ZAI_SEARCH_API_KEY`, `SERPER_API_KEY`, `JINA_API_KEY` | Optional |
+| Research | `ZAI_SEARCH_API_KEY`, `SERPER_API_KEY`, `JINA_API_KEY`, `TAVILY_API_KEY`, `ANYSEARCH_API_KEY`, `DOUBAO_WEB_SEARCH_API_KEY`, `DOUBAO_IMAGE_SEARCH_API_KEY` | Optional |
 | Documents | `MINERU_TOKEN`, local material settings | Optional |
-| Media | `NANO_BANANA_API_KEY`, OSS and video settings | Optional |
+| Media | `NANO_BANANA_API_KEY`, OSS and video settings, `DOUBAO_IMAGE_SEARCH_API_KEY` for search-based illustrations | Optional |
 | Tracing | `TRACE_ENABLED`, `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY` | Optional |
 | Feature flags | Book, XHS, derivatives, deep scraping, and agent switches | Optional |
 

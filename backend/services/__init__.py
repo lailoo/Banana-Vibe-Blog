@@ -30,6 +30,10 @@ _EXPORTS = {
     "BlogService": ("services.blog_generation", "BlogService"),
     "init_blog_service": ("services.blog_generation", "init_blog_service"),
     "get_blog_service": ("services.blog_generation", "get_blog_service"),
+    "DoubaoSearchService": ("services.blog_generation", "DoubaoSearchService"),
+    "DoubaoImageSearchService": ("services.blog_generation", "DoubaoImageSearchService"),
+    "init_doubao_image_search_service": ("services.blog_generation", "init_doubao_image_search_service"),
+    "get_doubao_image_search_service": ("services.blog_generation", "get_doubao_image_search_service"),
 }
 
 __all__ = list(_EXPORTS)
